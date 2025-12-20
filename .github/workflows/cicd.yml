@@ -1,18 +1,27 @@
-name: CICD Pipeline
+name: Docker Build & Test
 
 on:
   push:
     branches: [ "main" ]
   pull_request:
-    branches: [ "main" ]
 
 jobs:
-
-  build:
-
+  docker:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Build Docker image
+      run: |
+        docker build -t flask-docker-app .
+
+    - name: Run container and test
+      run: |
+        docker run -d -p 5000:5000 --name test-container flask-docker-app
+        sleep 5
+        curl http://localhost:5000
