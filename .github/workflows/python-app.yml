@@ -1,4 +1,5 @@
-name: Build, Run, and Show Output
+
+name: Build, Run, and Test Flask App
 
 on:
   push:
@@ -10,29 +11,22 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
       - name: Build Docker image
-        run: docker build -t flask-demo .
-
-      - name: Run container
         run: |
-          docker run -d --name flask-container -p 5000:5000 flask-demo
+          docker build -t flask-demo .
 
-      - name: Wait for Flask to start
+      - name: Run container and show output
         run: |
-          for i in {1..10}; do
-            if curl -s http://localhost:5000 > /dev/null; then
-              echo "Flask is up"
-              break
-            fi
-            echo "Waiting..."
-            sleep 2
-          done
+          docker run -d -p 5000:5000 flask-demo
 
-      - name: Show output (THIS is what you want)
-        run: curl http://localhost:5000
+      - name: Test app endpoint
+        run: |
+          curl http://localhost:5000
 
-      - name: Show container logs
-        if: always()
-        run: docker logs flask-container
+      - name: Run container detached and fetch logs
+        run: |
+          docker run -d -p 8080:8080 flask-demo
+          CONTAINER_ID=$(docker ps -q --latest)
+          docker logs $CONTAINER_ID
