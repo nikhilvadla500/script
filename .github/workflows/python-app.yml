@@ -1,4 +1,4 @@
-name: Docker App CI
+name: Docker Flask CI
 
 on:
   push:
@@ -7,20 +7,23 @@ on:
     branches: [ "main" ]
 
 jobs:
-  docker-build-run:
+  docker-flask:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout (same as Jenkins git step)
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          ref: main
 
-      # Build Docker image
       - name: Build Docker image
         run: docker build -t myapp:latest .
 
-      # Run Docker container
       - name: Run Docker container
-        run: docker run -d -p 8080:8080 myapp:latest
+        run: docker run -d -p 5000:5000 myapp:latest
+
+      - name: Wait for Flask to start
+        run: sleep 5
+
+      - name: Call Flask endpoint (PRINT OUTPUT)
+        run: curl http://localhost:5000
+
+    
