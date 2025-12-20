@@ -1,4 +1,3 @@
-
 name: Build, Run, and Test Flask App
 
 on:
@@ -20,13 +19,13 @@ jobs:
       - name: Run container and show output
         run: |
           docker run -d -p 5000:5000 flask-demo
+          sleep 5  # Wait for the app to start
 
       - name: Test app endpoint
         run: |
           curl http://localhost:5000
 
-      - name: Run container detached and fetch logs
+      - name: Show container logs
         run: |
-          docker run -d -p 8080:8080 flask-demo
           CONTAINER_ID=$(docker ps -q --latest)
           docker logs $CONTAINER_ID
