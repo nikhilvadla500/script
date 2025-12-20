@@ -14,15 +14,15 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t myflaskapp:latest .
+          docker build -t flask-demo .
 
       - name: Run container and show output
         run: |
-          docker run -p 5000:5000 myflaskapp:latest
+          docker run -p 5000:5000 flask-demo
 
       - name: Run container detached and fetch logs
         run: |
-          docker run -d -p 5000:5000 myflaskapp:latest
+          docker run -d -p 8080:8080 flask-demo
           sleep 5
           CONTAINER_ID=$(docker ps -q --latest)
           docker logs $CONTAINER_ID
