@@ -1,4 +1,4 @@
-name: Docker Flask CI
+name: Docker App Pipeline
 
 on:
   push:
@@ -7,23 +7,27 @@ on:
     branches: [ "main" ]
 
 jobs:
-  docker-flask:
+  docker-app:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: main
 
-      - name: Build Docker image
+      - name: Build Image
         run: docker build -t myapp:latest .
 
-      - name: Run Docker container
-        run: docker run -d -p 5000:5000 myapp:latest
+      - name: Run Container
+        run: docker run -d --name myapp-container -p 8080:5000 myapp:latest
 
-      - name: Wait for Flask to start
+      - name: Wait for app to start
         run: sleep 5
 
-      - name: Call Flask endpoint (PRINT OUTPUT)
-        run: curl http://localhost:5000
+      - name: Show application output
+        run: curl http://localhost:8080
 
-    
+      - name: Show container logs
+        if: always()
+        run: docker logs myapp-container
