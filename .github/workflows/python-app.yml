@@ -16,6 +16,13 @@ jobs:
         run: |
           docker build -t myapp:latest .
 
-      - name: Run container
+      - name: Run container and show output
+        run: |
+          docker run myapp:latest
+
+      - name: Run container detached and fetch logs
         run: |
           docker run -d -p 8080:8080 myapp:latest
+          sleep 5
+          CONTAINER_ID=$(docker ps -q --latest)
+          docker logs $CONTAINER_ID
