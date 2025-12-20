@@ -1,4 +1,4 @@
-name: Run Python App
+name: Docker App CI
 
 on:
   push:
@@ -7,17 +7,20 @@ on:
     branches: [ "main" ]
 
 jobs:
-  run-app:
+  docker-build-run:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      # Checkout (same as Jenkins git step)
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: main
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: "3.11"
+      # Build Docker image
+      - name: Build Docker image
+        run: docker build -t myapp:latest .
 
-    - name: Run app.py
-      run: python app.py
+      # Run Docker container
+      - name: Run Docker container
+        run: docker run -d -p 8080:8080 myapp:latest
