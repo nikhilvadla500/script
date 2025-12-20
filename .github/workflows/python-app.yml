@@ -1,4 +1,4 @@
-name: Build and Run Docker
+name: Build, Run, and Show Output
 
 on:
   push:
@@ -14,15 +14,15 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t myapp:latest .
+          docker build -t myflaskapp:latest .
 
       - name: Run container and show output
         run: |
-          docker run myapp:latest
+          docker run -p 5000:5000 myflaskapp:latest
 
       - name: Run container detached and fetch logs
         run: |
-          docker run -d -p 8080:8080 myapp:latest
+          docker run -d -p 5000:5000 myflaskapp:latest
           sleep 5
           CONTAINER_ID=$(docker ps -q --latest)
           docker logs $CONTAINER_ID
