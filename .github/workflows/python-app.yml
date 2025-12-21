@@ -13,12 +13,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Build Docker image
+      - name: Build Docker image (no cache)
         run: |
-          docker build -t flask-app .
+          docker build --no-cache -t flask .
 
       - name: Run Flask container
         run: |
-          docker run -d -p 5000:5000 --name flask-test flask-app
+          docker run -d -p 5000:5000 --name flask-test flask
           sleep 5
           docker logs flask-test
